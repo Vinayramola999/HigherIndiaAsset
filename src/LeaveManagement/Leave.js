@@ -5,7 +5,7 @@ import ApplyLeave from './ApplyLeave';
 import BalanceLeave from './BalanceLeave';
 import LeaveApproval from './LeaveApproval';
 import LeavePolicy from './LeavePolicy';
-import { FaHome, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome ,FaSignOutAlt } from 'react-icons/fa';
 import Holiday from './Holiday';
 import AllBalances from './AllBalances';
 import Sidebar from '../Sidebar/HRMSidebar';
@@ -28,10 +28,6 @@ const LeaveManagement = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState({ show: false, id: null });
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedLeave, setSelectedLeave] = useState(null);
-    const [hasAMSAccess, setHasAMSAccess] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const [setUserId] = useState(null);
-
 
     const [formData, setFormData] = useState({
         leave_type: '',
@@ -71,7 +67,7 @@ const LeaveManagement = () => {
             delete cleanedFormData.percentage; // Remove percentage
         }
 
-        const apiUrl = `http://intranet.higherindia.net:3006/leave/leave-types`; // Ensure this URL is correct
+        const apiUrl = `${process.env.URL}/leave/leave-types`; // Ensure this URL is correct
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
 
         try {
@@ -147,7 +143,7 @@ const LeaveManagement = () => {
             const fetchUserData = async () => {
                 try {
                     console.log('Fetching data for userId:', userId);
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -176,14 +172,16 @@ const LeaveManagement = () => {
     const handleFormReset = () => {
         // Reset form fields here (depending on your form structure)
         setFormData({
-
+            field1: '',
+            field2: '',
+            // Add other fields here
         });
     };
 
     const fetchLeaves = async () => {
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
         try {
-            const response = await fetch('http://intranet.higherindia.net:3006/leave/leave-types', {
+            const response = await fetch('http://higherindia.net:3006/leave/leave-types', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`, // Add token to the Authorization header
@@ -213,9 +211,9 @@ const LeaveManagement = () => {
     };
 
     const handleDelete = async () => {
-        const token = localStorage.getItem('token'); // Retrieve token from localStorage
+        const token = localStorage.getItem('authToken'); // Retrieve token from localStorage
         try {
-            await axios.delete(`http://intranet.higherindia.net:3006/leave/leave-types/${showDeleteConfirm.id}`, {
+            await axios.delete(`http://higherindia.net:3006/leave/leave-types/${showDeleteConfirm.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
@@ -357,7 +355,7 @@ const LeaveManagement = () => {
                     <>
                         <div className="mb-4">
                             <label htmlFor="max_requests">
-                                Set max. trenches of leave request you can apply according to allocation type <span className='text-red-600'>*</span>
+                                Set maximum number of leave request you can apply according to allocation type <span className='text-red-600'>*</span>
                             </label>
                             <input
                                 type="text"
@@ -429,55 +427,6 @@ const LeaveManagement = () => {
                 return null;
         }
     };
-
-    useEffect(() => {
-        const checkAMSAccess = async () => {
-            setLoading(true);
-            try {
-                let user_id = localStorage.getItem('userId');
-                setUserId(user_id);
-                const response = await axios.get('http://intranet.higherindia.net:3006/access', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    },
-                });
-                const userAccess = response.data;
-                let userIdData = userAccess.filter(item => item.user_id === user_id);
-                const hasAccess = userIdData.some(access => access.api_name === 'Leave');
-                // const hasAccess1 = userIdData.some(access => access.api_name === 'create_contact');
-                // const hasAccess2 = userIdData.some(access => access.api_name === 'update_customer');
-                // const hasAccess3 = userIdData.some(access => access.api_name === 'delete_customer');
-                setHasAMSAccess(hasAccess);
-            } catch (error) {
-                console.error('Error fetching access rights:', error);
-                setHasAMSAccess(false);
-            } 
-        };
-        checkAMSAccess();
-    }, []);
-
-    const verifyToken = async () => {
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
-                token: token
-            });
-            console.log('Token is valid:', response.data);
-            navigate('/Leave');
-        } catch (error) {
-            console.error('Token verification failed:', error.response ? error.response.data : error.message);
-            localStorage.removeItem('token');
-            localStorage.removeItem('tokenExpiry');
-            navigate('/');
-        }
-    };
-
-    useEffect(() => {
-        verifyToken();
-    }, []);
 
     return (
         <div className='flex'>
@@ -749,12 +698,7 @@ const LeaveManagement = () => {
                             </div>
                         </div>}
 
-                        {tabValue === 1 && hasAMSAccess && (
-                            <div>
-                                <ApplyLeave />
-                            </div>
-                        )}
-                        {/* {tabValue === 1 && <div><ApplyLeave /></div>} */}
+                        {tabValue === 1 && <div><ApplyLeave /></div>}
                         {tabValue === 2 && <div><BalanceLeave /></div>}
                         {tabValue === 3 && <div><LeaveApproval /></div>}
                         {tabValue === 4 && <div><LeavePolicy /></div>}

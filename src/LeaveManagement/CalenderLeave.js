@@ -20,7 +20,7 @@ const YourComponent = () => {
     const fetchYearData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://intranet.higherindia.net:3006/yrset/year', {
+            const response = await axios.get('http://higherindia.net:3006/yrset/year', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -67,7 +67,7 @@ const YourComponent = () => {
         setApiError(null);
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://intranet.higherindia.net:3006/yrset/year', formData, {
+            const response = await axios.post('http://higherindia.net:3006/yrset/year', formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }
@@ -100,7 +100,7 @@ const YourComponent = () => {
     const handleDelete = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`http://intranet.higherindia.net:3006/yrset/year/${id}`, {
+            await axios.delete(`http://higherindia.net:3006/yrset/year/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 }

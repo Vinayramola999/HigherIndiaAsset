@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { FaEdit, FaTrash, FaTimes, FaSave } from "react-icons/fa";
 import { FaHome, FaSignOutAlt } from "react-icons/fa";
@@ -6,15 +7,16 @@ import Sidebar from "../../Sidebar/HRMSidebar";
 import axios from "axios";
 
 const Category = () => {
+  
   const [categoryData, setCategoryData] = useState({
     categoryName: "",
     categoryType: "Select Type",
     workflowname: "Select Workflow",
     approvalrole: "Approvers Role", // Initialize approversRole
-
-    createdBy: "Admin",
+    createdBy: "userId ",
+    status: "Draft",
   });
-
+ 
   const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectAll, setSelectAll] = useState(false); // State for Select All check
@@ -45,6 +47,11 @@ const Category = () => {
   const modalRef = useRef(null);
   const [categoryFields, setCategoryFields] = useState([]);
   const [updatedOn, setUpdatedOn] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const [assetToDelete, setAssetToDelete] = useState(null);
+  const [isCategoryEditable, setIsCategoryEditable] = useState(false);
+  // const [editCategoryDetails, setEditCategoryDetails] = useState(null)
+
   // Fetch categories on component mount
   useEffect(() => {
     fetchCategories();
@@ -53,7 +60,7 @@ const Category = () => {
   useEffect(() => {
     if ((isEditCategoryModalOpen, categories)) {
       axios
-        .get("http://intranet.higherindia.net:3006/role")
+        .get("http://higherindia.net:3006/role")
         .then((response) => {
           if (response && response.data) {
             setRoles(response.data);
@@ -79,18 +86,18 @@ const Category = () => {
     };
 
     fetchWorkflows();
-  }, []); 
+  }, []); // Empty dependency array means this effect runs once on component mount
 
   const fetchCategories = async () => {
     try {
       const response = await axios.get(
         "https://intranet.higherindia.net:8443/api/categories/fetch"
       );
-      console.log("API response:", response.data); 
+      console.log("API response:", response.data); // Check structure of the response
       setCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Error fetching categories:", error);
-      setCategories([]); 
+      setCategories([]); // Ensures `categories` is an array even if fetch fails
     }
   };
 
@@ -169,7 +176,7 @@ const Category = () => {
   };
   const removeExistingField = async (id) => {
     try {
-      await axios.delete('https://intranet.higherindia.net:8443/api/assets/${id}');
+      await axios.delete(`https://intranet.higherindia.net:8443/api/assets/${id}`);
       window.location.reload();
 
       setUpdatedOn((prev) => prev + 1);
@@ -184,21 +191,66 @@ const Category = () => {
     if (categoryData.workflowname === "Select Workflow") {
       alert("Please select a workflow.");
       return;
+        // Get the userId from localStorage
+  const userId = localStorage.getItem("userId");
+  
+  // Check if userId is available
+  if (!userId) {
+    alert("User ID is not available.");
+    return;
+  }
     }
     try {
       const newCategory = {
         categoriesname: categoryData.categoryName, // Category name
-        createdBy: categoryData.createdBy, // Creator name
+        createdBy: Number(userId), // Creator user_id
         description: categoryData.categoryType, // Category type (description)
         workflowname: categoryData.workflowname, // Workflow name
         approvalrole: categoryData.approvalrole, // Approvers roles (array of roles)
         status: "Draft", // Status (can be dynamic if needed)
-        fields: [...existingFields, ...newFields], // Fields
+        // fields: [...existingFields, ...newFields], // Fields
       };
       console.log("Submitting category: ", newCategory); // Debug log to check data
 
       const response = await axios.post(
         "https://intranet.higherindia.net:8443/api/categories/add",
+        newCategory
+      );
+      setUpdatedOn(new Date()); // Trigger re-fetch or update of categories
+      setCategories(
+        Array.isArray(response.data.categories) ? response.data.categories : []
+      );
+
+      resetForm(); // Reset the form after successful submission
+      alert("Category added successfully!");
+    } catch (error) {
+      alert("Error adding category. Please try again.");
+      console.error("Error adding category:", error);
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    // Check if a valid workflow is selected
+    if (categoryData.workflowname === "Select Workflow") {
+      alert("Please select a workflow.");
+      return;
+    }
+  
+    try {
+      const newCategory = {
+        categoriesname: categoryData.categoryName, // Category name
+        createdBy: Number(userId), // Creator user_id
+        description: categoryData.categoryType, // Category type (description)
+        workflowname: categoryData.workflowname, // Workflow name
+        approvalrole: categoryData.approvalrole, // Approvers roles (array of roles)
+        status: categoryData.status || "Draft", // Status (can be dynamic if needed)
+        // fields: [...existingFields, ...newFields], // Fields
+      };
+      console.log("Updating category: ", newCategory); // Debug log to check data
+
+      const response = await axios.put(
+        `https://intranet.higherindia.net:8443/api/categories/update/${categoryData.categoryId}`,
         newCategory
       );
       setUpdatedOn(new Date()); // Trigger re-fetch or update of categories
@@ -224,7 +276,7 @@ const Category = () => {
       categoryType: "Select Type",
       workflowname: "Select Workflow ",
       approvalrole: [],
-      createdBy: "Admin",
+      createdBy: "userId",
       status: "Draft",
     });
     setNewFields([
@@ -237,18 +289,33 @@ const Category = () => {
     ]);
     setSelectedWorkflow("");
   };
+  const cancelDelete = () => {
+    setIsDeleteModalOpen(false); // Close the modal without deleting
+    setAssetToDelete(null); // Clear the asset to delete
+  };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
+    setAssetToDelete(id); // Set the category id to be deleted
+    setIsDeleteModalOpen(true); // Open the modal
+  };
+  
+  const confirmDelete = async () => {
     try {
-      await axios.delete(
-        'https://intranet.higherindia.net:8443/api/categories/delete/${id}'
-      );
-      setCategories(categories.filter((category) => category.id !== id));
-      setUpdatedOn((prev) => prev + 1);
+      if (assetToDelete) {
+        await axios.delete(
+          `https://intranet.higherindia.net:8443/api/categories/delete/${assetToDelete}`
+        );
+        setCategories(categories.filter((category) => category.id !== assetToDelete)); // Update the categories list
+        setUpdatedOn((prev) => prev + 1); // Trigger a re-render or refresh if needed
+      }
     } catch (error) {
       console.error("Error deleting category:", error);
+    } finally {
+      setIsDeleteModalOpen(false); // Close the modal after the operation
+      setAssetToDelete(null); // Clear the asset to delete
     }
   };
+  
 
   const handleTemporarySave = async (category) => {
     try {
@@ -488,7 +555,7 @@ const Category = () => {
         try {
           console.log("Fetching data for userId:", userId);
           const response = await axios.get(
-            'http://intranet.higherindia.net:3006/users/id_user/${userId}',
+            `http://higherindia.net:3006/users/id_user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -518,7 +585,7 @@ const Category = () => {
     }
     try {
       const response = await axios.post(
-        "http://intranet.higherindia.net:3006/verify-token",
+        "http://higherindia.net:3006/verify-token",
         {
           token: token,
         }
@@ -584,11 +651,11 @@ const Category = () => {
               </div>
             )}
           </div>
-          {/*HEADER END *************** */}
+          {/*************************HEADER END *************** */}
 
           <div className="bg-white p-4 rounded-lg shadow-md">
             {/* <h2 className="text-lg font-semibold mb-4">Add Category</h2> */}
-            <form onSubmit={handleSubmit} className="flex flex-wrap gap-4 mb-4">
+            <form onSubmit={isCategoryEditable ? handleUpdate : handleSubmit} className="flex flex-wrap gap-4 mb-4">
               <div className="flex flex-col gap-2">
                 <label className="text-[#555252]">Category Name</label>
                 <input
@@ -642,10 +709,10 @@ const Category = () => {
 
               {/* Dropdown with roles and Select All option */}
               <div className="flex flex-col gap-2">
-                <label className="text-[#555252]">Approval Roles</label>
+                <label className="text-[#555252]">Approvers Roles</label>
                 <select
                   name="approvalrole"
-                  // multiple
+                  //  multiple
                   value={categoryData.approvalrole} // Bind selected roles to the state
                   onChange={handleApprovalRoleChange} // Handle change to update state
                   className="p-2 w-[200px] border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#F0F0F0]"
@@ -697,7 +764,7 @@ const Category = () => {
                     <th className="p-3 text-left">Approvers Role</th>
                     <th className="p-3 text-left">Status</th>{" "}
                     {/* New Status Column */}
-                    <th className="p-3 text-left">Creator Name</th>
+                    <th className="p-3 text-left">Created By</th>
                     <th className="p-3 text-left">Action</th>
                   </tr>
                 </thead>
@@ -734,7 +801,13 @@ const Category = () => {
                               <FaSave />
                             </button>
                           )}
-                          <button className="text-green-500 hover:underline">
+                          <button className="text-green-500 hover:underline" type="button" onClick={() => {setIsCategoryEditable(true); console.log({category}); setCategoryData({
+                            workflowname: category.workflowname,
+                            categoryName: category.categoriesname,
+                            approvalrole: category.approvalrole,
+                            categoryType: category.description,
+                            categoryId: category.categoryId
+                          })}}>
                             <FaEdit />
                           </button>
                           <button
@@ -757,6 +830,33 @@ const Category = () => {
               </table>
             </div>
           </div>
+          {/* Delete Confirmation Modal */}
+{isDeleteModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-1/4">
+      <div className="p-6">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Are you sure you want to delete this asset?
+        </h2>
+        <div className="flex justify-end space-x-4 mt-4">
+          <button
+            onClick={cancelDelete}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded"
+          >
+            No
+          </button>
+          <button
+            onClick={confirmDelete}
+            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
           {/* Edit Category Modal */}
           {isEditCategoryModalOpen && (

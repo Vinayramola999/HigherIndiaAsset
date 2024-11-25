@@ -32,7 +32,7 @@ const Login = () => {
     try {
       // Authenticate the user with the login API
       const loginResponse = await axios.post(
-        "http://intranet.higherindia.net:3006/login",
+        "http://higherindia.net:3006/login",
         {
           email,
           password,
@@ -43,7 +43,7 @@ const Login = () => {
       localStorage.setItem("userId", userId);
 
       // Fetch the list of all users from the API
-      const usersResponse = await axios.get("http://intranet.higherindia.net:3006/users");
+      const usersResponse = await axios.get("http://higherindia.net:3006/users");
       const users = usersResponse.data;
 
       // Check if the entered email exists in the list of users

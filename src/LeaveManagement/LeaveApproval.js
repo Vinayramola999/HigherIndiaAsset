@@ -11,7 +11,7 @@ const LeaveModal = ({ leave, onClose, onUpdateLeaves }) => {
         const manager_id = leave.manager_id;
         try {
             const token = localStorage.getItem('tokenoken');
-            const response = await axios.put(`http://intranet.higherindia.net:3006/leave/leave-requests/${id}`, {
+            const response = await axios.put(`http://higherindia.net:3006/leave/leave-requests/${id}`, {
                 manager_id,
                 status
             }, {
@@ -185,7 +185,7 @@ const LeaveManagement = () => {
     const fetchLeaves = async () => {
         if (!userId || !token) return;
         try {
-            const response = await axios.get(`http://intranet.higherindia.net:3006/leave/manager/${userId}`, {
+            const response = await axios.get(`http://higherindia.net:3006/leave/manager/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -234,7 +234,7 @@ const LeaveManagement = () => {
 
     const fetchLeaveTypes = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/leave/leave-types', {
+            const response = await axios.get('http://higherindia.net:3006/leave/leave-types', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

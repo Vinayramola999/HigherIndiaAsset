@@ -28,12 +28,12 @@ const DesignationTable = () => {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        console.log('UserId:', userId);
+        console.log('UserId:', userId); // Check if userId is valid
         if (userId) {
             const fetchUserData = async () => {
                 try {
-                    console.log('Fetching data for userId:', userId);
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    console.log('Fetching data for userId:', userId); // Log before API call
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -57,11 +57,7 @@ const DesignationTable = () => {
 
     const fetchDesignations = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/designation', {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
+            const response = await axios.get('http://higherindia.net:3006/designation');
             setDesignations(response.data);
         } catch (error) {
             console.error('Error fetching designations:', error);
@@ -75,13 +71,9 @@ const DesignationTable = () => {
         }
         try {
             setLoading(true);
-            const response = await axios.post('http://intranet.higherindia.net:3006/designation', {
+            const response = await axios.post('http://higherindia.net:3006/designation', {
                 designation: newDesignationName,
                 description: newDesignationDescription,
-            }, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
             });
             setDesignations([...designations, response.data.designation]);
             setNewDesignationName('');
@@ -99,11 +91,8 @@ const DesignationTable = () => {
         try {
             await axios({
                 method: 'delete',
-                url: 'http://intranet.higherindia.net:3006/designation',
+                url: 'http://higherindia.net:3006/designation',
                 data: { id },
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
             });
             setDesignations(designations.filter(designation => designation.desig_id !== id));
             setIsDeleteModalOpen(false);
@@ -112,6 +101,17 @@ const DesignationTable = () => {
             alert('Failed to delete designation.');
         }
     };
+
+    // const handleDelete = async (desig_id) => {
+    //     try {
+    //         await axios.delete(`http://higherindia.net:3006/designation/${desig_id}`);
+    //         setDesignations(designations.filter((designation) => designation.desig_id !== desig_id));
+    //         setIsDeleteModalOpen(false);
+    //     } catch (error) {
+    //         console.error('Error deleting designation:', error);
+    //         alert('Failed to delete designation.');
+    //     }
+    // };
 
     const confirmDelete = (designation) => {
         setDesignationToDelete(designation);
@@ -127,41 +127,13 @@ const DesignationTable = () => {
         saveAs(data, 'Designations.xlsx');
     };
 
-    const verifyToken = async () => {
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
-                token: token
-            });
-            console.log('Token is valid:', response.data);
-            navigate('/Designation');
-        } catch (error) {
-            console.error('Token verification failed:', error.response ? error.response.data : error.message);
-            localStorage.removeItem('token');
-            localStorage.removeItem('tokenExpiry');
-            navigate('/');
-        }
-    };
-
-    useEffect(() => {
-        const handlePopState = () => {
-            navigate('/Cards1');
-        };
-        window.addEventListener('popstate', handlePopState);
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, [navigate]);
-
-    useEffect(() => {
-        verifyToken();
-    }, []);
-
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("tokenExpiry");
+        console.log('Token:', localStorage.getItem("token"));
+        console.log('User ID:', localStorage.getItem("userId"));
+        console.log('Token Expiry:', localStorage.getItem("tokenExpiry"));
         navigate('/');
     };
 
@@ -203,10 +175,10 @@ const DesignationTable = () => {
                 </div>
                 {/*************************  Header End  ******************************/}
 
-                <div className="flex justify-between mt-3">
+                <div className="flex justify-between mt-4">
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className="bg-gray-700 w-[13%] text-white px-4 py-2 rounded-3xl mt-1 mb-4 hover:bg-custome-blue ">
+                        className="bg-gray-700 text-white px-4 py-2 rounded-2xl">
                         Add Designation
                     </button>
                     <button onClick={handleDownloadExcel} className="text-green-500">
@@ -289,24 +261,23 @@ const DesignationTable = () => {
                     </div>
                 )}
 
-                {/*****  Designation Table *******/}
-                <div className="overflow-x-auto shadow-md rounded-lg">
+                <div className="overflow-x-auto">
                     <table className="min-w-full table-auto border-collapse">
                         <thead>
                             <tr className="bg-gray-200 text-left">
-                                <th className="py-2 px-4 border-b">S.no</th>
+                                <th className="py-2 px-4 border-b">ID</th>
                                 <th className="py-2 px-4 border-b">Designation</th>
                                 <th className="py-2 px-4 border-b">Description</th>
                                 <th className="py-2 px-4 text-center border-b">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {designations.map((designation, index) => (
+                            {designations.map((designation, index) => (
                                 <tr key={index} className={`bg-${index % 2 === 0 ? 'blue-50' : 'white'} border-t`}>
-                                    <td className="p-4 border-b">{index+1}</td>
-                                    <td className="p-4 border-b">{designation.designation}</td>
-                                    <td className="p-4 border-b">{designation.description}</td>
-                                    <td className="p-4 text-center border-b">
+                                    <td className="py-2 px-4 border-b">{designation.desig_id}</td>
+                                    <td className="py-2 px-4 border-b">{designation.designation}</td>
+                                    <td className="py-2 px-4 border-b">{designation.description}</td>
+                                    <td className="py-2 px-4 text-center border-b">
                                         <button
                                             className="text-red-500 hover:text-red-700 mr-2"
                                             onClick={() => confirmDelete(designation)}>

@@ -38,7 +38,7 @@
 //             return;
 //         }
 //         try {
-//             await axios.post('http://43.204.140.118:3006/verify-token', { token });
+//             await axios.post('http://higherindia.net:3006/verify-token', { token });
 //         } catch (error) {
 //             console.error('Token verification failed:', error.message);
 //             localStorage.removeItem('token');
@@ -60,7 +60,7 @@
 //     // Fetch user details by ID
 //     const fetchUserDetails = async (userId) => {
 //         try {
-//             const response = await axios.get(`http://43.204.140.118:3006/users/id_user/${userId}`);
+//             const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`);
 //             return response.data.name; // Assuming the user has a name property
 //         } catch (error) {
 //             console.error('Error fetching user details', error);
@@ -246,7 +246,7 @@ const ResubmittedApproval = () => {
             return;
         }
         try {
-            await axios.post('http://43.204.140.118:3006/verify-token', { token });
+            await axios.post('http://higherindia.net:3006/verify-token', { token });
         } catch (error) {
             console.error('Token verification failed:', error.message);
             localStorage.removeItem('token');
@@ -268,7 +268,7 @@ const ResubmittedApproval = () => {
     // Fetch user details by ID
     const fetchUserDetails = async (userId) => {
         try {
-            const response = await axios.get(`http://43.204.140.118:3006/users/id_user/${userId}`);
+            const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`);
             return `${response.data.first_name} ${response.data.last_name}`; // Assuming user has first_name and last_name properties
         } catch (error) {
             console.error('Error fetching user details', error);

@@ -27,7 +27,7 @@ const LeaveManagement = () => {
 
   const fetchLeaves = async () => {
     try {
-      const response = await axios.get('http://intranet.higherindia.net:3006/leave/leave-types');
+      const response = await axios.get('http://higherindia.net:3006/leave/leave-types');
       if (response.data.leave_types && Array.isArray(response.data.leave_types)) {
         setLeaves(response.data.leave_types);
       }
@@ -58,7 +58,7 @@ const LeaveManagement = () => {
     }
 
     try {
-      const response = await axios.post('http://intranet.higherindia.net:3006/leave/leave-types', cleanedFormData);
+      const response = await axios.post('http://higherindia.net:3006/leave/leave-types', cleanedFormData);
       setLeaves([...leaves, response.data]); // Assuming response contains the new leave
       // Reset form after successful submission
       setFormData({

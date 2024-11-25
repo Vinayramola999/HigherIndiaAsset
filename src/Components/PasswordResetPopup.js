@@ -4,22 +4,13 @@ import axios from 'axios';
 const PasswordResetPopup = ({ email, onClose, onOtpSent }) => { // Added onOtpSent as a prop
   const handleSendOtp = async () => {
     try {
-        const token = localStorage.getItem('token'); 
-
-        await axios.post('http://intranet.higherindia.net:3006/request-otp', 
-            { email },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Add the token to the request headers
-                }
-            }
-        );
-        onOtpSent(); 
+      await axios.post('http://higherindia.net:3006/request-otp', { email });
+      onOtpSent(); // Call the callback function after sending OTP
     } catch (err) {
-        console.error('Error sending OTP:', err);
-        alert('Failed to send OTP.');
+      console.error('Error sending OTP:', err);
+      alert('Failed to send OTP.');
     }
-};
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">

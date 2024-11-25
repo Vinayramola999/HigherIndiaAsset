@@ -11,50 +11,33 @@ const OtpVerificationPopup = ({ email, onClose }) => {
 
   const handleVerifyOtp = async () => {
     try {
-        const token = localStorage.getItem('token'); // Or wherever you store the token
-
-        const response = await axios.post('http://intranet.higherindia.net:3006/verify-otp', 
-            { email, otp },
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Add token to the headers
-                }
-            }
-        );
-        if (response.data.message === "OTP verified. You can now reset your password.") {
-            setOtpVerified(true);
-            setError('');
-        }
+      const response = await axios.post('http://higherindia.net:3006/verify-otp', { email, otp });
+      if (response.data.message === "OTP verified. You can now reset your password.") {
+        setOtpVerified(true);
+        setError('');
+      }
     } catch (err) {
-        console.error('Error verifying OTP:', err);
-        setError('Failed to verify OTP.');
+      console.error('Error verifying OTP:', err);
+      setError('Failed to verify OTP.');
     }
-};
+  };
 
-const handleResetPassword = async () => {
-  if (password !== confirmPassword) {
+  const handleResetPassword = async () => {
+    if (password !== confirmPassword) {
       setError('Passwords do not match.');
       return;
-  }
-  try {
-      const token = localStorage.getItem('token'); // Or wherever you store the token
+    }
 
-      await axios.post('http://intranet.higherindia.net:3006/reset-password', 
-          { email, password, confirmPassword },
-          {
-              headers: {
-                  'Authorization': `Bearer ${token}`, // Add token to the headers
-              }
-          }
-      );
+    try {
+      await axios.post('http://higherindia.net:3006/reset-password', { email, password, confirmPassword });
       alert('Password reset successfully. You can now log in.');
       onClose(); 
       window.location.href = '/'; 
-  } catch (err) {
+    } catch (err) {
       console.error('Error resetting password:', err);
       setError('Failed to reset password.');
-  }
-};
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">

@@ -6,24 +6,17 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-        try {
-            const token = localStorage.getItem('token'); 
-            if (!token) {
-                throw new Error('Token not found. Please log in again.');
-            }
-            const response = await axios.get("http://intranet.higherindia.net:3006/users", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            const user = response.data;
-            setUserData(user);
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
+      try {
+        const response = await axios.get("http://higherindia.net:3006/users");
+        const user = response.data; 
+        setUserData(user);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
     };
+
     fetchUserData();
-}, []); 
+  }, []);
 
   if (!userData) {
     return <div>Loading...</div>;
@@ -40,4 +33,5 @@ const UserProfile = () => {
     </div>
   );
 };
+
 export default UserProfile;

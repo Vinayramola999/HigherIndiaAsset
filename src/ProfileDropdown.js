@@ -4,8 +4,8 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
 const profileItems = [
-  { icon: "http://cdn.builder.io/api/v1/image/assets/TEMP/a407c21bbddbba8e9f32540c38b89b1bc9feea9abe41dade9b0eb372ade13f3c?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db", text: "View profile" },
-  // { icon: "http://cdn.builder.io/api/v1/image/assets/TEMP/4e697dfb4708fba0a1adef55465a1c49196148cf688834f2180cba100c9fe003?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db", text: "Settings And Privacy" }
+  { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/a407c21bbddbba8e9f32540c38b89b1bc9feea9abe41dade9b0eb372ade13f3c?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db", text: "View profile" },
+  // { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/4e697dfb4708fba0a1adef55465a1c49196148cf688834f2180cba100c9fe003?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db", text: "Settings And Privacy" }
 ];
 
 function ProfileItem({ icon, text, navigate }) {
@@ -34,7 +34,7 @@ function LogoutButton() {
   return (
     <button className="flex gap-2.5 self-stretch px-2.5 py-2 mt-40 text-xs text-red-400 rounded-lg bg-zinc-300 bg-opacity-50 w-full"
       onClick={Logout}>
-      <img loading="lazy" src="http://cdn.builder.io/api/v1/image/assets/TEMP/342bb2da21789f81ffbfd2d7b23f61fcc6c937b98e58d57453a75ada6e36e758?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db" alt="" className="object-contain shrink-0 w-6 aspect-square" />
+      <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/342bb2da21789f81ffbfd2d7b23f61fcc6c937b98e58d57453a75ada6e36e758?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db" alt="" className="object-contain shrink-0 w-6 aspect-square" />
       <span className="grow shrink my-auto w-[179px]">Log Out</span>
     </button>
   );
@@ -52,7 +52,7 @@ function ProfileDropdown() {
       return;
     }
     try {
-      const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
+      const response = await axios.post('http://higherindia.net:3006/verify-token', {
         token: token
       });
       console.log('Token is valid:', response.data);
@@ -68,7 +68,7 @@ function ProfileDropdown() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+        const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -87,7 +87,7 @@ function ProfileDropdown() {
   return (
     <section className="flex overflow-hidden flex-col items-start px-4 py-3.5 bg-white rounded-lg border border-solid border-zinc-500 w-[295px]">
       <header className="flex gap-3.5">
-        <img loading="lazy" src="http://cdn.builder.io/api/v1/image/assets/TEMP/8839e5a86c91c744ae902ecbb75ae11121a15ba11a67d20ec56f825e116dd9ef?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db" alt="" className="object-contain shrink-0 aspect-square w-[45px]" />
+        <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/8839e5a86c91c744ae902ecbb75ae11121a15ba11a67d20ec56f825e116dd9ef?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db" alt="" className="object-contain shrink-0 aspect-square w-[45px]" />
         <div className="flex flex-col my-auto">
           <p className="text-xs text-neutral-600"></p>
           {userData && (

@@ -46,7 +46,7 @@ const Register = () => {
     useEffect(() => {
         const fetchDepartments = async () => {
             try {
-                const response = await axios.get('http://intranet.higherindia.net:3006/departments', {
+                const response = await axios.get('http://higherindia.net:3006/departments', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -142,7 +142,7 @@ const Register = () => {
                 location: location_name || "NA"
             };
             console.log('Sending payload:', payload);
-            const response = await axios.post('http://intranet.higherindia.net:3006/signup', payload);
+            const response = await axios.post('http://higherindia.net:3006/signup', payload);
             if (response.data.message === 'User registered successfully.') {
                 setNotification({ message: 'Registration successful.', color: 'green' });
                 setUsers((prevUsers) => [
@@ -222,7 +222,7 @@ const Register = () => {
 
     const fetchDesignations = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/designation');
+            const response = await axios.get('http://higherindia.net:3006/designation');
             setDesignations(response.data);
         } catch (error) {
             console.error('Error fetching designations:', error);
@@ -231,7 +231,7 @@ const Register = () => {
 
     const fetchLocation = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/loc');
+            const response = await axios.get('http://higherindia.net:3006/loc');
             setLocations(response.data);
         } catch (error) {
             console.error('Error fetching locations:', error);

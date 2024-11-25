@@ -40,50 +40,39 @@ const cardData = [
     },
 ];
 
-
 const CardPage = () => {
     const [availableBtn, setAvailableBtn] = useState();
-    const userId = localStorage.getItem('userId');
     const cardTitles = ['Dept', 'Location', 'Designation', 'Domain'];
 
     useEffect(() => {
         const getUserAccessibleCard = async () => {
             try {
-                const token = localStorage.getItem('token'); // Get the token from localStorage
-                if (!token) {
-                    throw new Error('Token not found. Please log in again.');
-                }
-
                 console.log(cardTitles, userId);
-                let response = await fetch("http://intranet.higherindia.net:3006/access/verify-access", {
+                let response = await fetch("http://higherindia.net:3006/access/verify-access", {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`  // Add the token to the Authorization header
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         user_id: parseInt(userId),
                         pages: cardTitles
                     })
-                });
-
+                })
                 let data = await response.json();
                 let availableButton = {};
                 Object.entries(data).forEach(([key, value]) => {
                     if (value) {
                         availableButton[key] = key;
                     }
-                });
-
+                })
                 console.log("Available:", availableButton);
                 setAvailableBtn(availableButton);
             } catch (error) {
-                alert(error.message);
+                alert(error.message)
             }
-        };
-
+        }
         getUserAccessibleCard();
-    }, [userId]);
+    }, [])
 
     const getTitle = (value) => {
         switch (value) {
@@ -104,9 +93,8 @@ const CardPage = () => {
         }
     }
 
-
-
     //TOKEN AND USERPROFILE  START  
+    const userId = localStorage.getItem('userId');
     const [userData, setUserData] = useState('');
     const navigate = useNavigate();
     const getToken = () => {
@@ -123,7 +111,7 @@ const CardPage = () => {
             const fetchUserData = async () => {
                 try {
                     console.log('Fetching data for userId:', userId);
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -151,7 +139,7 @@ const CardPage = () => {
                 return;
             }
             try {
-                const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', { token });
+                const response = await axios.post('http://higherindia.net:3006/verify-token', { token });
                 console.log('Token is valid:', response.data);
                 navigate('/Cards1');
             } catch (error) {
@@ -173,16 +161,6 @@ const CardPage = () => {
         navigate('/Cards');
     };
     //END 
-
-    useEffect(() => {
-        const handlePopState = () => {
-            navigate('/HRMS');
-        };
-        window.addEventListener('popstate', handlePopState);
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, [navigate]);
 
     return (
         <div className="p-6 bg-white min-h-screen">

@@ -45,7 +45,7 @@ const ChangePassword = () => {
       return;
     }
     try {
-      const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
+      const response = await axios.post('http://higherindia.net:3006/verify-token', {
         token: token
       });
       console.log('Token is valid:', response.data);
@@ -74,7 +74,7 @@ const ChangePassword = () => {
 
     try {
       setLoading(true);
-      const url = 'http://intranet.higherindia.net:3006/users/change-password';
+      const url = 'http://higherindia.net:3006/users/change-password';
       const data = {
         oldPassword: password.old,
         newPassword: password.new,

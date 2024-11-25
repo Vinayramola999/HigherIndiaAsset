@@ -21,7 +21,7 @@ const HolidayManager = () => {
     const fetchHolidayData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://intranet.higherindia.net:3006/yrset/holidays', {
+            const response = await axios.get('http://higherindia.net:3006/yrset/holidays', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -50,7 +50,7 @@ const HolidayManager = () => {
         try {
             const token = localStorage.getItem('token');
 
-            await axios.post('http://intranet.higherindia.net:3006/yrset/holidays', [holidayFormData], {
+            await axios.post('http://higherindia.net:3006/yrset/holidays', [holidayFormData], {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -78,7 +78,7 @@ const HolidayManager = () => {
             try {
                 const token = localStorage.getItem('token'); // Retrieve the token from localStorage
 
-                await axios.delete('http://intranet.higherindia.net:3006/yrset/holidays', {
+                await axios.delete('http://higherindia.net:3006/yrset/holidays', {
                     headers: {
                         'Authorization': `Bearer ${token}` // Add token to the header
                     },

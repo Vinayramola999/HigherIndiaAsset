@@ -19,7 +19,7 @@ function LeavePolicy() {
         const enabled = sandwichLeave === 'Yes';
         try {
             const response = await axios.post(
-                'http://intranet.higherindia.net:3006/leave/sandwich',{ enabled },
+                'http://higherindia.net:3006/leave/sandwich',{ enabled },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`, // Add token to Authorization header
@@ -38,7 +38,7 @@ function LeavePolicy() {
     const fetchSandwichLeave = async () => {
         const token = localStorage.getItem('token'); 
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/leave/sandwich', {
+            const response = await axios.get('http://higherindia.net:3006/leave/sandwich', {
                 headers: {
                     'Authorization': `Bearer ${token}`, 
                     'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function LeavePolicy() {
         const token = localStorage.getItem('token');
         const leaveValue = leaveSelection === 'Leave Left This Year';
         try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/set-condition',{ condition: leaveValue },
+            const response = await axios.post('http://higherindia.net:3006/set-condition',{ condition: leaveValue },
                 {
                     headers: {
                         'Authorization': `Bearer ${token}`, // Add token to Authorization header
@@ -77,7 +77,7 @@ function LeavePolicy() {
     const fetchLeaveDetails = async () => {
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/get-condition', {
+            const response = await axios.get('http://higherindia.net:3006/get-condition', {
                 headers: {
                     'Authorization': `Bearer ${token}`, // Add token to Authorization header
                     'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ function LeavePolicy() {
         const conditionValue = applyCondition === 'true';
         try {
             const response = await axios.post(
-                'http://intranet.higherindia.net:3006/set-lapse',
+                'http://higherindia.net:3006/set-lapse',
                 { lapse: conditionValue },
                 {
                     headers: {
@@ -119,7 +119,7 @@ function LeavePolicy() {
     const fetchApplyCondition = async () => {
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/get-lapse', {
+            const response = await axios.get('http://higherindia.net:3006/get-lapse', {
                 headers: {
                     'Authorization': `Bearer ${token}`, // Add token to Authorization header
                     'Content-Type': 'application/json',
@@ -136,7 +136,7 @@ function LeavePolicy() {
     const handleResetMonthlyLeave = async () => {
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/reset-monthly', {
+            const response = await axios.get('http://higherindia.net:3006/reset-monthly', {
                 headers: {
                     'Authorization': `Bearer ${token}`, // Add token to Authorization header
                     'Content-Type': 'application/json',
@@ -153,7 +153,7 @@ function LeavePolicy() {
     const handleResetYearlyLeave = async () => {
         const token = localStorage.getItem('token'); // Retrieve token from localStorage
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/trigger-update', {
+            const response = await axios.get('http://higherindia.net:3006/trigger-update', {
                 headers: {
                     'Authorization': `Bearer ${token}`, // Add token to Authorization header
                     'Content-Type': 'application/json',

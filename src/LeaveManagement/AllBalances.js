@@ -17,7 +17,7 @@ const LeaveBalance = () => {
     // Fetch all available leave types for the dropdown filter
     const fetchLeaveTypes = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/leave/leave-types', {
+            const response = await axios.get('http://higherindia.net:3006/leave/leave-types', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -41,7 +41,7 @@ const LeaveBalance = () => {
                 console.error('No token found');
                 return;
             }
-            const response = await axios.get('http://intranet.higherindia.net:3006/leave/balance', {
+            const response = await axios.get('http://higherindia.net:3006/leave/balance', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -81,7 +81,7 @@ const LeaveBalance = () => {
             
             try {
                 await axios.put(
-                    `http://intranet.higherindia.net:3006/leave/leave-balances/${id}`,
+                    `http://higherindia.net:3006/leave/leave-balances/${id}`,
                     {
                         balance: updatedBalance,
                         previous_balance: updatedPreviousBalance,

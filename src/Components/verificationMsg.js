@@ -17,7 +17,7 @@ const VerMsg = ({ open, onClose }) => {
 
   const handleOtpSubmit = async () => {
     try {
-      const res = await axios.post("http://intranet.higherindia.net:3006/verify", {
+      const res = await axios.post("http://higherindia.net:3006/verify", {
         emailVerificationCode: emailVerificationCode,
         smsVerificationCode: smsVerificationCode,
       });

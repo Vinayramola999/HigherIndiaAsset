@@ -49,7 +49,7 @@ const LeaveManagement = () => {
             delete cleanedFormData.carry_forward_type; 
             delete cleanedFormData.percentage; 
         }
-        const apiUrl = 'http://intranet.higherindia.net:3006/leave/leave-types'; 
+        const apiUrl = 'http://higherindia.net:3006/leave/leave-types'; 
         try {
             const response = await fetch(apiUrl, {
                 method: 'POST',
@@ -96,7 +96,7 @@ const LeaveManagement = () => {
         try {
             await axios({
                 method: 'delete',
-                url: 'http://intranet.higherindia.net:3006/leave',
+                url: 'http://higherindia.net:3006/leave',
                 data: { id },
             });
             setLeaves(leaves.filter(leave => leave.leave_id !== id));
@@ -139,7 +139,7 @@ const LeaveManagement = () => {
 
     const fetchLeaves = async () => {
         try {
-            const response = await fetch('http://intranet.higherindia.net:3006/leave/leave-types');
+            const response = await fetch('http://higherindia.net:3006/leave/leave-types');
             if (!response.ok) {
                 throw new Error('Failed to fetch leaves');
             }

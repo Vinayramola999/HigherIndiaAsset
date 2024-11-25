@@ -10,7 +10,7 @@ const PasswordInput = ({ label, placeholder, value, onChange }) => {
             <div className="flex gap-6 px-3.5 py-4 text-xs rounded-xl border border-black border-solid bg-zinc-50 text-neutral-400">
                 <img
                     loading="lazy"
-                    src="http://cdn.builder.io/api/v1/image/assets/TEMP/578e92bad370ed651ec7a72933d071e71fff57a3a886820783ec24907c355685?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/578e92bad370ed651ec7a72933d071e71fff57a3a886820783ec24907c355685?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
                     alt=""
                     className="object-contain shrink-0 self-start w-3.5 aspect-square"
                 />
@@ -43,7 +43,7 @@ const PasswordSetup = () => {
             </div>
             <main className="flex flex-col text-sm text-black rounded-none ml-[15%] mt-[10%] max-w-[330px]">
                 <img loading="lazy"
-                    src="http://cdn.builder.io/api/v1/image/assets/TEMP/047e41c687ca366cbdc17b6a91d100d2842916288fb5d4d3fe9daf7cc2e24482?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/047e41c687ca366cbdc17b6a91d100d2842916288fb5d4d3fe9daf7cc2e24482?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
                     alt="" className="object-contain self-center aspect-square w-[45px]"
                 />
                 <h1 className="self-center mt-5 text-2xl font-semibold">

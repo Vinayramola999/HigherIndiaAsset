@@ -7,7 +7,7 @@ import ChangePassword from './Components/ChangePassword';
 
 // Fetch user profile including location
 const fetchUserProfileLocation = async (userId) => {
-    const response = await fetch(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+    const response = await fetch(`http://higherindia.net:3006/users/id_user/${userId}`, {
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -21,40 +21,27 @@ const fetchUserProfileLocation = async (userId) => {
 
 // Fetch available locations
 const fetchLocation = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        throw new Error('Token is missing. Please log in again.');
+    const response = await fetch('http://higherindia.net:3006/loc');
+    if (!response.ok) {
+        throw new Error('Failed to fetch location');
     }
-    try {
-        const response = await fetch('http://intranet.higherindia.net:3006/loc', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch location');
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching location:', error.message);
-        throw error;  // Rethrow or handle as needed
-    }
+    const data = await response.json();
+    return data; // Assuming this returns an array of locations
 };
-
 
 const ProfilePage = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [profile, setProfile] = useState(null);
+    const [location, setLocation] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const userId = localStorage.getItem('userId');
     const [updatedProfile, setUpdatedProfile] = useState({});
     const [matchedLocation, setMatchedLocation] = useState(null);
+    const [newProfileImage, setNewProfileImage] = useState(null);
     const [isChangePasswordVisible, setChangePasswordVisible] = useState(false);
+
 
     useEffect(() => {
         const getUserProfileAndLocation = async () => {
@@ -102,7 +89,7 @@ const ProfilePage = () => {
             return;
         }
         try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
+            const response = await axios.post('http://higherindia.net:3006/verify-token', {
                 token: token
             });
             console.log('Token is valid:', response.data);

@@ -11,7 +11,7 @@ const LeavesTable = () => {
         if (!userId) return;
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://intranet.higherindia.net:3006/leave/balance/${userId}`, {
+            const response = await fetch(`http://higherindia.net:3006/leave/balance/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ const LeavesTable = () => {
         if (userId) {
             const fetchUserData = async () => {
                 try {
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },

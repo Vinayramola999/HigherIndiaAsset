@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { FaHome, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../Sidebar/HRMSidebar';
-import excel from '../assests/excel.png';
+import excel from '../assests/excel.png'; 
 import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -24,13 +24,26 @@ const RoleTable = () => {
     const [newRoleAccess, setNewRoleAccess] = useState('');
 
     useEffect(() => {
+        fetchRoles();
+    }, []);
+
+    const fetchRoles = async () => {
+        try {
+            const response = await axios.get('http://higherindia.net:3006/role');
+            setRoles(response.data); 
+        } catch (error) {
+            console.error('Error fetching roles:', error);
+        }
+    };
+
+    useEffect(() => {
         const userId = localStorage.getItem('userId');
         console.log('UserId:', userId); // Check if userId is valid
         if (userId) {
             const fetchUserData = async () => {
                 try {
                     console.log('Fetching data for userId:', userId); // Log before API call
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -52,40 +65,17 @@ const RoleTable = () => {
     },
         [token, userId]);
 
-    useEffect(() => {
-        fetchRoles();
-    }, []);
-
-    const fetchRoles = async () => {
-        const token = localStorage.getItem('token');  // Retrieve the token
-        try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/role', {
-                headers: {
-                    Authorization: `Bearer ${token}`,  // Add token to headers
-                }
-            });
-            setRoles(response.data);
-        } catch (error) {
-            console.error('Error fetching roles:', error);
-        }
-    };
-
     const handleAddRole = async () => {
-        const token = localStorage.getItem('token');  // Retrieve the token
         if (!newRoleName) {
             alert('Role name is required');
             return;
         }
         try {
             setLoading(true);
-            const response = await axios.post('http://intranet.higherindia.net:3006/role', {
+            const response = await axios.post('http://higherindia.net:3006/role', {
                 role: newRoleName,
                 description: newRoleDescription,
                 access: newRoleAccess,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,  // Add token to headers
-                }
             });
             setRoles([...roles, response.data.role]);
             setNewRoleName('');
@@ -101,23 +91,19 @@ const RoleTable = () => {
     };
 
     const handleDelete = async (id) => {
-        const token = localStorage.getItem('token');  // Retrieve the token
         try {
-            await axios({
-                method: 'delete',
-                url: 'http://intranet.higherindia.net:3006/role',
-                data: { id },
-                headers: {
-                    Authorization: `Bearer ${token}`,  // Add token to headers
-                }
-            });
-            setRoles(roles.filter(role => role.role_id !== id));
-            setIsDeleteModalOpen(false);
+          await axios({
+            method: 'delete',
+            url: 'http://higherindia.net:3006/role',
+            data: { id },
+          });
+          setRoles(roles.filter(role => role.role_id !== id));
+          setIsDeleteModalOpen(false);
         } catch (error) {
-            console.error('Error deleting role:', error);
-            alert('Failed to delete role.');
+          console.error('Error deleting department:', error);
+          alert('Failed to delete department.');
         }
-    };
+      };
 
     const confirmDelete = (role) => {
         setRoleToDelete(role);
@@ -133,31 +119,8 @@ const RoleTable = () => {
         saveAs(data, 'Roles.xlsx');
     };
 
-    const verifyToken = async () => {
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
-                token: token
-            });
-            console.log('Token is valid:', response.data);
-            navigate('/Role');
-        } catch (error) {
-            console.error('Token verification failed:', error.response ? error.response.data : error.message);
-            localStorage.removeItem('token');
-            localStorage.removeItem('tokenExpiry');
-            navigate('/');
-        }
-    };
-
-    useEffect(() => {
-        verifyToken();
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem("token");
+        localStorage.clear();
         navigate('/');
     };
 
@@ -191,9 +154,9 @@ const RoleTable = () => {
                 {/* End */}
 
                 <div className="flex justify-between mt-4">
-                    <button onClick={() => setIsAddModalOpen(true)}
-                        className="bg-gray-700 w-[13%] text-white px-4 py-2 rounded-3xl mt-1 mb-4 hover:bg-custome-blue">
-                        Add Role
+                    <button onClick={() => setIsAddModalOpen(true)} 
+                           className="bg-gray-700 w-[13%] text-white px-4 py-2 rounded-3xl mt-1 mb-4 hover:bg-custome-blue">
+                            Add Role
                     </button>
                     <button onClick={handleDownloadExcel} className="text-green-500">
                         <img src={excel} alt="logo" className="mr-5 w-8 h-8" />
@@ -328,10 +291,10 @@ const RoleTable = () => {
                         <tbody>
                             {roles.map((role, index) => (
                                 <tr key={index} className={`bg-${index % 2 === 0 ? 'blue-50' : 'white'} border-t`}>
-                                    <td className="py-2 px-4 border-b">{role.role_id}</td>
+                                    <td className="py-2 px-4 border-b">{role.role_id}</td> {/* Updated to role_id */}
                                     <td className="py-2 px-4 border-b">{role.role}</td>
-                                    <td className="py-2 px-4 border-b">{role.description || 'N/A'}</td>
-                                    <td className="py-2 px-4 border-b">{role.access || 'N/A'}</td>
+                                    <td className="py-2 px-4 border-b">{role.description || 'N/A'}</td> {/* Show description or N/A */}
+                                    <td className="py-2 px-4 border-b">{role.access || 'N/A'}</td> {/* Show access or N/A */}
                                     <td className="py-2 px-4 text-center border-b">
                                         <button onClick={() => confirmDelete(role)} className="text-red-600">
                                             <FontAwesomeIcon icon={faTrash} />

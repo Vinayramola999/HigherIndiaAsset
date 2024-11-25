@@ -20,7 +20,7 @@ export default function WorkingDaysComponent() {
     const fetchWorkingDaysData = async () => {
         try {
             const token = localStorage.getItem('token');    
-            const response = await axios.get('http://intranet.higherindia.net:3006/yrset/days', {
+            const response = await axios.get('http://higherindia.net:3006/yrset/days', {
                 headers: {
                     'Authorization': `Bearer ${token}`, 
                 }
@@ -55,7 +55,7 @@ export default function WorkingDaysComponent() {
         setApiError(null);
         try {
             const token = localStorage.getItem('token');    
-            const response = await axios.post('http://intranet.higherindia.net:3006/yrset/days', {
+            const response = await axios.post('http://higherindia.net:3006/yrset/days', {
                 year_type: formData.year_type,
                 working_day: selectedDays,
             }, {

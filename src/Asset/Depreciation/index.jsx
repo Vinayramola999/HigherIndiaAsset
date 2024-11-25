@@ -55,28 +55,34 @@ const DepreciationPage = () => {
   };
 
   const fetchViewData = async () => {
-    const formattedStartDate = dateOption === 'today' ? new Date().toISOString().split('T')[0] : startDate;
-    const formattedEndDate = dateOption === 'today' ? new Date().toISOString().split('T')[0] : endDate;
-
+    const formattedStartDate = dateOption === 'custom' ? startDate : ''; // Only set if custom
+  
     try {
-      const endpoint =
-        selectedMethod === 'WDV'
-          ? `https://intranet.higherindia.net:8443/api/dep/calculateWDB/${selectedCategory}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
-          : `https://intranet.higherindia.net:8443/api/dep/calculateDepreciation/${selectedCategory}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`;
-
-      const response = await fetch(endpoint);
-      const result = await response.json();
-      setViewData(result);
-      setShowTable(true);
+      let endpoint = '';
+      if (dateOption === 'today') {
+        if (selectedMethod === 'WDV') {
+          endpoint = `https://intranet.higherindia.net:8443/api/dep/calculateWDB/${selectedCategory}`;
+        } else if (selectedMethod === 'SLM') {
+          endpoint = `https://intranet.higherindia.net:8443/api/dep/calculateDepreciation/${selectedCategory}`;
+        }
+      } else if (dateOption === 'custom' && formattedStartDate) {
+        if (selectedMethod === 'WDV') {
+          endpoint = `https://intranet.higherindia.net:8443/api/dep/calculateWDBToDate/category/${selectedCategory}?startDate=${formattedStartDate}`;
+        } else if (selectedMethod === 'SLM') {
+          endpoint = `https://intranet.higherindia.net:8443/api/dep/calculateSlmDepreciationToDate/category/${selectedCategory}?startDate=${formattedStartDate}`;
+        }
+      }
+  
+      if (endpoint) {
+        const response = await fetch(endpoint);
+        const result = await response.json();
+        setViewData(result); // Set the data received
+        setShowTable(true);   // Display the table once data is fetched
+        setShowModal(false);  // Close the modal
+      }
     } catch (error) {
       console.error('Error fetching depreciation data:', error);
-    }
-  };
-
-  const handleViewSubmit = async () => {
-    if (selectedCategory) {
-      await fetchViewData(); // Fetch the data first
-      setShowModal(false); // Close the modal after fetching data
+      setShowModal(false); // Close the modal on error
     }
   };
 
@@ -117,6 +123,12 @@ const DepreciationPage = () => {
     setSelectedCategory(item.categoriesname);
     setDepreciationValue(item.deprecessionPercentage);
     setShowModal(true);
+  };
+  const handleViewSubmit = async () => {
+    if (selectedCategory) {
+      await fetchViewData(); // Fetch the data based on the selected method and date option
+      setShowModal(false); // Close the modal after fetching data
+    }
   };
 
   const handleUpdate = async (e) => {
@@ -218,7 +230,7 @@ const DepreciationPage = () => {
       const fetchUserData = async () => {
         try {
           console.log('Fetching data for userId:', userId);
-          const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+          const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -246,7 +258,7 @@ const DepreciationPage = () => {
         return;
       }
       try {
-        const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', { token });
+        const response = await axios.post('http://higherindia.net:3006/verify-token', { token });
         console.log('Token is valid:', response.data);
         navigate('/Depreciation');
       } catch (error) {
@@ -445,76 +457,64 @@ const DepreciationPage = () => {
                         </select>
                       </div>
 
-                      {/* Date Range Options */}
-                      <div className="mb-4">
-                        <label className="text-gray-700 font-semibold">Date Range</label>
-                        <div className="flex space-x-4 mt-2">
-                          <button
-                            onClick={() => {
-                              setDateOption('today');
-                              setStartDate('');
-                              setEndDate('');
-                            }}
-                            className={`px-4 py-2 text-sm font-semibold ${dateOption === 'today' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'}`}
-                          >
-                            Today
-                          </button>
-                          <button
-                            onClick={() => setDateOption('custom')}
-                            className={`px-4 py-2 text-sm font-semibold ${dateOption === 'custom' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'}`}
-                          >
-                            Custom Range
-                          </button>
-                        </div>
-                      </div>
+                               {/* Date Range Options */}
+                               <div className="mb-4">
+  <label className="text-gray-700 font-semibold">As on</label>
+  <div className="flex space-x-4 mt-2">
+    <button
+      onClick={() => {
+        setDateOption('today'); // Select "Today" option
+        setStartDate(''); // Clear any custom date
+      }}
+      className={`px-4 py-2 text-sm font-semibold ${dateOption === 'today' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'}`}
+    >
+      Today
+    </button>
+    <button
+      onClick={() => setDateOption('custom')} // Select "Custom" option
+      className={`px-4 py-2 text-sm font-semibold ${dateOption === 'custom' ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-700'}`}
+    >
+      Custom date
+    </button>
+  </div>
+</div>
 
-                      {/* Custom Range Inputs */}
-                      {dateOption === 'custom' && (
-                        <div className="flex gap-4 mb-4">
-                          <div className="flex flex-col w-full">
-                            <label htmlFor="startDate" className="mb-2 text-gray-700 font-semibold">
-                              Start Date
-                            </label>
-                            <input
-                              type="date"
-                              id="startDate"
-                              value={startDate}
-                              onChange={(e) => setStartDate(e.target.value)}
-                              className="px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 w-full"
-                            />
-                          </div>
-                          <div className="flex flex-col w-full">
-                            <label htmlFor="endDate" className="mb-2 text-gray-700 font-semibold">
-                              End Date
-                            </label>
-                            <input
-                              type="date"
-                              id="endDate"
-                              value={endDate}
-                              onChange={(e) => setEndDate(e.target.value)}
-                              className="px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 w-full"
-                            />
-                          </div>
-                        </div>
-                      )}
+                                       {/* Custom Range Inputs */}
+{dateOption === 'custom' && (
+  <div className="flex gap-4 mb-4">
+    <div className="flex flex-col w-full">
+      <label htmlFor="startDate" className="mb-2 text-gray-700 font-semibold">
+        Select Date
+      </label>
+      <input
+        type="date"
+        id="startDate"
+        value={startDate}
+        onChange={(e) => setStartDate(e.target.value)} // Set the custom start date
+        className="px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-blue-200 w-full"
+      />
+    </div>
+  </div>
+)}
 
-                      <div className="flex justify-end">
-                        <button
-                          onClick={() => setShowModal(false)}
-                          className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 mr-2"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300"
-                          onClick={handleViewSubmit}
-                        >
-                          Submit
-                        </button>
-                      </div>
-                    </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-300 mr-2"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition duration-300"
+                      onClick={handleViewSubmit}
+                    >
+                      Submit
+                    </button>
                   </div>
-                )}
+                </div>
+              </div>
+            )}
+
 
                 {/* View Depreciation Table */}
                 {showTable && (

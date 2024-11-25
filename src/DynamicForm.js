@@ -11,7 +11,7 @@ const DynamicForm = () => {
 
   // Fetch the form fields from the backend when the component loads
   useEffect(() => {
-    axios.get('http://intranet.higherindia.net:3006/form-fields', {
+    axios.get('http://higherindia.net:3006/form-fields', {
       headers: {
         'Accept': 'application/json'
       }
@@ -98,7 +98,7 @@ const DynamicForm = () => {
     });
 
     try {
-      const response = await axios.post('http://intranet.higherindia.net:3006/submit', { formData, newFields });
+      const response = await axios.post('http://higherindia.net:3006/submit', { formData, newFields });
       setFeedback('Form submitted successfully!');
       setFields([...fields, ...newFields]); // Update the fields state to include newly added fields
       setNewFields([]); // Reset new fields after submission

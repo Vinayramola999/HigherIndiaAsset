@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FaSignOutAlt, FaHome } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -42,48 +42,37 @@ const cardData = [
 
 const CardPage = () => {
     const [availableBtn, setAvailableBtn] = useState();
-    const userId = localStorage.getItem('userId');
     const cardTitles = ['ORG', 'UMC', 'Leave', 'UserData'];
-
-    const navigate = useNavigate();
-    const location = useLocation();  // Get the current location from React Router
 
     useEffect(() => {
         const getUserAccessibleCard = async () => {
             try {
-                const token = localStorage.getItem('token'); // Get the token from localStorage
-                if (!token) {
-                    throw new Error('Token not found. Please log in again.');
-                }
-    
-                let response = await fetch("http://intranet.higherindia.net:3006/access/verify-access", {
+                console.log(cardTitles, userId);
+                let response = await fetch("http://higherindia.net:3006/access/verify-access", {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`  // Add the token to the Authorization header
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         user_id: parseInt(userId),
                         pages: cardTitles
                     })
-                });
-    
+                })
                 let data = await response.json();
                 let availableButton = {};
                 Object.entries(data).forEach(([key, value]) => {
                     if (value) {
                         availableButton[key] = key;
                     }
-                });
-    
+                })
+                console.log("Available:", availableButton);
                 setAvailableBtn(availableButton);
             } catch (error) {
-                alert(error.message);
+                alert(error.message)
             }
-        };
-    
+        }
         getUserAccessibleCard();
-    }, [userId]);
+    }, [])
 
     const getTitle = (value) => {
         switch (value) {
@@ -105,26 +94,36 @@ const CardPage = () => {
         }
     }
 
-    // Fetching user data
+    //TOKEN AND USERPROFILE  START  
+    const userId = localStorage.getItem('userId');
     const [userData, setUserData] = useState('');
+    const navigate = useNavigate();
     const getToken = () => {
         const token = localStorage.getItem('token');
         return token;
     };
     const token = getToken();
+    console.log('Retrieved token:', token);
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
+        console.log('UserId:', userId);
         if (userId) {
             const fetchUserData = async () => {
                 try {
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    console.log('Fetching data for userId:', userId);
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
+                    console.log('API Response:', response);
                     if (response.data) {
-                        setUserData(response.data);
+                        const user = response.data;
+                        console.log('User:', user);
+                        setUserData(user);
+                    } else {
+                        console.log('No user data found');
                     }
                 } catch (error) {
                     console.error('Error fetching user data:', error);
@@ -132,7 +131,7 @@ const CardPage = () => {
             };
             fetchUserData();
         }
-    }, [token]);
+    }, [token, userId]);
 
     useEffect(() => {
         const verifyToken = async () => {
@@ -141,7 +140,8 @@ const CardPage = () => {
                 return;
             }
             try {
-                const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', { token });
+                const response = await axios.post('http://higherindia.net:3006/verify-token', { token });
+                console.log('Token is valid:', response.data);
                 navigate('/HRMS');
             } catch (error) {
                 console.error('Token verification failed:', error.response ? error.response.data : error.message);
@@ -161,23 +161,11 @@ const CardPage = () => {
     const handleHome = () => {
         navigate('/Cards');
     };
-
-    // Handle back button popstate event
-    useEffect(() => {
-        const handlePopState = () => {
-            if (location.pathname !== '/Cards') {
-                navigate('/Cards', { replace: true });  // Make sure it's replaced in the history stack
-            }
-        };
-
-        window.addEventListener('popstate', handlePopState);
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, [location, navigate]);
+    //END 
 
     return (
         <div className="p-6 bg-white min-h-screen">
+            {/*************************  Header Start  ******************************/}
             <div className="bg-custome-blue rounded-lg w-full p-3 flex justify-between items-center shadow-lg">
                 <button onClick={handleHome} type="button" className="flex items-center p-2 rounded-full">
                     <FaHome className="text-white mr-2" size={25} />
@@ -195,13 +183,14 @@ const CardPage = () => {
                         <button
                             onClick={handleLogout}
                             type="button"
-                            className="bg-white flex items-center p-2 rounded-full "
-                        >
+                            className="bg-white flex items-center p-2 rounded-full ">
                             <FaSignOutAlt className="text-black mr-2" size={20} />
+                            <span className="text-black font-semibold"></span>
                         </button>
                     </div>
                 )}
             </div>
+            {/*************************  Header End  ******************************/}
 
             <div className="bg-white rounded-lg p-6">
                 <div className="flex flex-wrap justify-center gap-6">
@@ -219,5 +208,4 @@ const CardPage = () => {
         </div>
     );
 };
-
 export default CardPage;

@@ -4,7 +4,7 @@ import axios from 'axios';
 const PasswordResetPopup = ({ email, onClose, onOtpSent }) => { // Added onOtpSent as a prop
   const handleSendOtp = async () => {
     try {
-      await axios.post('http://intranet.higherindia.net:3006/request-otp', { email });
+      await axios.post('http://higherindia.net:3006/request-otp', { email });
       onOtpSent(); // Call the callback function after sending OTP
     } catch (err) {
       console.error('Error sending OTP:', err);

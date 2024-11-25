@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaLocationArrow, FaUser,FaProjectDiagram,FaTh,FaUserCog,FaClipboardList, FaEnvelope} from 'react-icons/fa';
+import { FaLocationArrow, FaUser,FaProjectDiagram,FaTh,FaUserCog,FaClipboardList, FaEnvelope, FaReact} from 'react-icons/fa';
 import logo from '../assests/Logo.png';
 
 const Sidebar = () => {
@@ -29,11 +29,11 @@ const Sidebar = () => {
     );
     const [isAssetOpen, setIsAssetOpen] = useState(
         location.pathname.includes('/Approval') ||
+        location.pathname.includes('/ResubmittedApproval') ||
         location.pathname.includes('/assets') ||
         location.pathname.includes('/categories') ||
         location.pathname.includes('/Depreciation') ||
-        location.pathname.includes('/Workflow') ||
-        location.pathname.includes('/ResubmittedApproval')
+        location.pathname.includes('/Workflow')
     );
 
     const toggleCrmMenu = () => {
@@ -170,7 +170,7 @@ const Sidebar = () => {
                             <li className="mt-1">
                                 <Link
                                     to="/Leave"
-                                    className={`flex items-center p-2 text-black rounded transition-colors text-[12px] ${location.pathname === '/Leave' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}>
+                                    className={`flex items-center p-2 text-black rounded transition-colors text-[10px] ${location.pathname === '/Leave' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}>
                                     <FaUser className="mr-2" /> Leave Management
                                 </Link>
                             </li>
@@ -197,7 +197,19 @@ const Sidebar = () => {
                                     <FaUserCog  className="mr-2" /> Approval Authority
                                 </Link>
                             </li>
+                          
+
                             <li className="mt-3">
+                                <Link
+                                    to="/ResubmittedApproval"
+                                    className={`flex items-center p-2 text-black rounded transition-colors text-[10px] ${location.pathname === '/ResubmittedApproval' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}
+                                >
+                                    <FaUserCog  className="mr-2" /> Resubmitted Approval
+                                </Link>
+                            </li>
+                            
+                            <li className="mt-3">
+
                                 <Link
                                     to="/assets"
                                     className={`flex items-center p-2 text-black rounded transition-colors text-[10px] ${location.pathname === '/assets' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}
@@ -205,16 +217,16 @@ const Sidebar = () => {
                                     <FaTh  className="mr-2" /> Asset
                                 </Link>
                             </li>
-                            <li className="mt-3">
+
+                        <li className="mt-3">
+
                                 <Link
-                                    to="/ResubmittedApproval"
-                                    className={`flex items-center p-2 text-black rounded transition-colors text-[10px] ${location.pathname === '/ResubmittedApproval' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}
+                                    to="/OrganizationLevel"
+                                    className={`flex items-center p-2 text-black rounded transition-colors text-[10px] ${location.pathname === '/OrganizationLevel' ? 'bg-blue-600 text-white' : 'hover:bg-blue-600 hover:text-white'}`}
                                 >
-                                    <FaClipboardList  className="mr-2" /> Resubmitted Approval
+                                    <FaTh  className="mr-2" /> Organization Level
                                 </Link>
                             </li>
-
-
 
                             <li className="mt-3">
                                 <Link

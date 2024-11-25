@@ -9,7 +9,7 @@ const PasswordInput = ({ value, onChange }) => (
         <div className="flex gap-6 px-3.5 py-4 mt-2 text-xs rounded-xl border border-black border-solid bg-zinc-50 text-neutral-400">
             <img
                 loading="lazy"
-                src="http://cdn.builder.io/api/v1/image/assets/TEMP/350382de318d81cc20156c5999a5e943daab19f908d2bbc10a7c2dad240e635c?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/350382de318d81cc20156c5999a5e943daab19f908d2bbc10a7c2dad240e635c?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
                 alt=""
                 className="object-contain shrink-0 self-start w-3.5 aspect-square"
             />
@@ -66,7 +66,7 @@ function PasswordContinuation() {
             <main className="flex flex-col text-sm text-black rounded-none ml-[15%] mt-[10%] max-w-[400px]">
                 <img
                     loading="lazy"
-                    src="http://cdn.builder.io/api/v1/image/assets/TEMP/047e41c687ca366cbdc17b6a91d100d2842916288fb5d4d3fe9daf7cc2e24482?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
+                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/047e41c687ca366cbdc17b6a91d100d2842916288fb5d4d3fe9daf7cc2e24482?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
                     alt=""
                     className="object-contain self-center aspect-square w-[45px]"
                 />
@@ -93,7 +93,7 @@ function PasswordContinuation() {
                         <div className="flex gap-1 w-14">
                             <img
                                 loading="lazy"
-                                src="http://cdn.builder.io/api/v1/image/assets/TEMP/1ad1f26ed703180392b68dfa61b9ade1973d7f08c1e50e05b7fa8bc87cc38271?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/1ad1f26ed703180392b68dfa61b9ade1973d7f08c1e50e05b7fa8bc87cc38271?placeholderIfAbsent=true&apiKey=f4328c4a551b4b9fa165bba17dc932db"
                                 alt=""
                                 className="object-contain shrink-0 w-5 aspect-[1.18]"
                             />

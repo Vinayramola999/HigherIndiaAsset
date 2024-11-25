@@ -54,34 +54,31 @@ const CardPage = () => {
         const getUserAccessibleCard = async () => {
             try {
                 console.log(cardTitles, userId);
-                const token = localStorage.getItem("token");
-
-                let response = await fetch("http://intranet.higherindia.net:3006/access/verify-access", {
+                let response = await fetch("http://higherindia.net:3006/access/verify-access", {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                         user_id: parseInt(userId),
                         pages: cardTitles
                     })
-                });
+                })
                 let data = await response.json();
                 let availableButton = {};
                 Object.entries(data).forEach(([key, value]) => {
                     if (value) {
                         availableButton[key] = key;
                     }
-                });
+                })
                 console.log("Available:", availableButton);
                 setAvailableBtn(availableButton);
             } catch (error) {
-                alert(error.message);
+                alert(error.message)
             }
-        };
+        }
         getUserAccessibleCard();
-    }, []);
+    }, [])
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
@@ -90,10 +87,9 @@ const CardPage = () => {
             const fetchUserData = async () => {
                 try {
                     console.log('Fetching data for userId:', userId);
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`,
                         },
                     });
                     console.log('API Response:', response);
@@ -122,25 +118,28 @@ const CardPage = () => {
         };
     }, [navigate]);
 
+    const verifyToken = async () => {
+        if (!token) {
+            navigate('/');
+            return;
+        }
+        try {
+            const response = await axios.post('http://higherindia.net:3006/verify-token', {
+                token: token
+            });
+            console.log('Token is valid:', response.data);
+            navigate('/Cards');
+        } catch (error) {
+            console.error('Token verification failed:', error.response ? error.response.data : error.message);
+            localStorage.removeItem('token');
+            localStorage.removeItem('tokenExpiry');
+            navigate('/');
+        }
+    };
+
     useEffect(() => {
-        const verifyToken = async () => {
-            if (!token) {
-                navigate('/');
-                return;
-            }
-            try {
-                const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', { token });
-                console.log('Token is valid:', response.data);
-                navigate('/Cards');
-            } catch (error) {
-                console.error('Token verification failed:', error.response ? error.response.data : error.message);
-                localStorage.removeItem('token');
-                localStorage.removeItem('tokenExpiry');
-                navigate('/');
-            }
-        };
         verifyToken();
-    }, [token, navigate]);
+    }, []);
 
     const getTitle = (value) => {
         switch (value) {
@@ -164,6 +163,11 @@ const CardPage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("tokenExpiry");
+        console.log('Token:', localStorage.getItem("token"));
+        console.log('User ID:', localStorage.getItem("userId"));
+        console.log('Token Expiry:', localStorage.getItem("tokenExpiry"));
         navigate('/');
     };
 
@@ -171,7 +175,7 @@ const CardPage = () => {
         <div className="p-6 bg-white min-h-screen">
             {/*************************  Header Start  ******************************/}
             <div className="bg-custome-blue rounded-lg w-full p-3 flex justify-between items-center shadow-lg">
-                <h1 className="text-white text-3xl font-bold">
+               <h1 className="text-white text-3xl font-bold">
                     <div>
                         <img src={logo} alt="Logo" className="w-30 h-10" />
                     </div>
@@ -190,6 +194,7 @@ const CardPage = () => {
                             type="button"
                             className="bg-white flex items-center p-2 rounded-full ">
                             <FaSignOutAlt className="text-black mr-2" size={20} />
+                            <span className="text-black font-semibold"></span>
                         </button>
                     </div>
                 )}

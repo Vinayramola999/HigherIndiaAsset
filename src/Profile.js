@@ -79,7 +79,7 @@ const Profile = () => {
             return;
         }
         try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
+            const response = await axios.post('http://higherindia.net:3006/verify-token', {
                 token: token
             });
             console.log('Token is valid:', response.data);
@@ -99,7 +99,7 @@ const Profile = () => {
             const fetchUserData = async () => {
                 try {
                     console.log('Fetching data for userId:', userId); // Log before API call
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users/id_user/${userId}`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users/id_user/${userId}`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -145,7 +145,7 @@ const Profile = () => {
         }
         try {
             console.log('➕', token)
-            const response = await fetch('http://intranet.higherindia.net:3006/customers', {
+            const response = await fetch('http://higherindia.net:3006/customers', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -172,7 +172,7 @@ const Profile = () => {
                 return;
             }
             try {
-                const response = await fetch(`http://intranet.higherindia.net:3006/contacts`, {
+                const response = await fetch(`http://higherindia.net:3006/contacts`, {
                     headers: {
                         'authorization': `Bearer ${token}`,
                     },
@@ -258,7 +258,7 @@ const Profile = () => {
                 gst_number: newCustomer.gst_number,
                 pan_no: newCustomer.pan_no,
             };
-            const response = await fetch('http://intranet.higherindia.net:3006/customers', {
+            const response = await fetch('http://higherindia.net:3006/customers', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -317,7 +317,7 @@ const Profile = () => {
                 alert('Token does not exist.')
                 return;
             }
-            const response = await fetch('http://intranet.higherindia.net:3006/contacts', {
+            const response = await fetch('http://higherindia.net:3006/contacts', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -377,7 +377,7 @@ const Profile = () => {
                 alert('Token does not exist.');
                 return;
             }
-            const url = `http://intranet.higherindia.net:3006/contacts/${contactId}`;
+            const url = `http://higherindia.net:3006/contacts/${contactId}`;
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
@@ -433,7 +433,7 @@ const Profile = () => {
                 alert('Token does not exist.');
                 return;
             }
-            const response = await fetch(`http://intranet.higherindia.net:3006/customers/${customerId}`, {
+            const response = await fetch(`http://higherindia.net:3006/customers/${customerId}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -490,7 +490,7 @@ const Profile = () => {
     //             return;
     //         }
 
-    //         const response = await axios.delete(`http://intranet.higherindia.net:3006/customers/${customerId}`, {
+    //         const response = await axios.delete(`http://higherindia.net:3006/customers/${customerId}`, {
     //             headers: {
     //                 'Content-Type': 'application/json',
     //                 'authorization': `Bearer ${token}`,
@@ -516,7 +516,7 @@ const Profile = () => {
                 setDeleteErrorMessage('Token does not exist.');
                 return;
             }
-            const response = await axios.delete(`http://intranet.higherindia.net:3006/customers/${customerId}`, {
+            const response = await axios.delete(`http://higherindia.net:3006/customers/${customerId}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'authorization': `Bearer ${token}`,
@@ -582,7 +582,7 @@ const Profile = () => {
                 return;
             }
 
-            const response = await fetch(`http://intranet.higherindia.net:3006/contacts/${contactId}`, {
+            const response = await fetch(`http://higherindia.net:3006/contacts/${contactId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -635,7 +635,7 @@ const Profile = () => {
             try {
                 let user_id = localStorage.getItem('userId');
                 setUserId(user_id);
-                const response = await axios.get('http://intranet.higherindia.net:3006/access', {
+                const response = await axios.get('http://higherindia.net:3006/access', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     },
@@ -1434,6 +1434,7 @@ const Profile = () => {
                                 <p><strong>TAN Number:</strong> {selectedCustomer.tan_number}</p>
                                 <p><strong>GST Number:</strong> {selectedCustomer.gst_number}</p>
                                 <p><strong>PAN Number:</strong> {selectedCustomer.pan_no}</p>
+
                                 <div className="mt-4">
                                     <h3 className="text-xl font-semibold mb-2">Contact Details</h3>
                                     {loadingContacts ? (

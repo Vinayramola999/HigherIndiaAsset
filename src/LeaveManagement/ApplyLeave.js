@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -10,7 +9,6 @@ const CreateLeave = ({ closeModal }) => {
     const [leave_type, setLeaveType] = useState('');
     const [start_date, setStartDate] = useState('');
     const [end_date, setEndDate] = useState('');
-    const navigate = useNavigate();
     const [reason, setReason] = useState('');
     const [managerId, setManagerId] = useState('');
     const [userData, setUserData] = useState([]);
@@ -27,7 +25,7 @@ const CreateLeave = ({ closeModal }) => {
             user_id: userId,
         };
         try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/leave/leave-requests', payload, {
+            const response = await axios.post('http://higherindia.net:3006/leave/leave-requests', payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -51,35 +49,13 @@ const CreateLeave = ({ closeModal }) => {
             }
         }
     };
-
-    const verifyToken = async () => {
-        if (!token) {
-            navigate('/');
-            return;
-        }
-        try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
-                token: token
-            });
-            console.log('Token is valid:', response.data);
-            navigate('/Leave');
-        } catch (error) {
-            console.error('Token verification failed:', error.response ? error.response.data : error.message);
-            localStorage.removeItem('token');
-            localStorage.removeItem('tokenExpiry');
-            navigate('/');
-        }
-    };
-
-    useEffect(() => {
-        verifyToken();
-    }, []);
+    
 
     useEffect(() => {
         if (userId) {
             const fetchUserData = async () => {
                 try {
-                    const response = await axios.get(`http://intranet.higherindia.net:3006/users`, {
+                    const response = await axios.get(`http://higherindia.net:3006/users`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
@@ -107,7 +83,7 @@ const CreateLeave = ({ closeModal }) => {
 
     const fetchLeaveTypes = async () => {
         try {
-            const response = await axios.get('http://intranet.higherindia.net:3006/leave/leave-types', {
+            const response = await axios.get('http://higherindia.net:3006/leave/leave-types', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
@@ -128,7 +104,7 @@ const CreateLeave = ({ closeModal }) => {
     const fetchLeave = async () => {
         if (!userId || !token) return;
         try {
-            const response = await axios.get(`http://intranet.higherindia.net:3006/leave/leave-requests/${userId}`, {
+            const response = await axios.get(`http://higherindia.net:3006/leave/leave-requests/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -139,7 +115,7 @@ const CreateLeave = ({ closeModal }) => {
             console.error('Error fetching leaves:', error);
         }
     };
-
+    
     useEffect(() => {
         fetchLeave();
         fetchLeaveTypes();
@@ -304,12 +280,12 @@ const LeaveManagement = () => {
     const token = localStorage.getItem('token');
     const [leaves, setLeaves] = useState([]);
     const [managersid, setManagersId] = useState();
-
+    
     // Fetch Leaves
     const fetchLeaves = async () => {
         if (!userId || !token) return;
         try {
-            const response = await axios.get(`http://intranet.higherindia.net:3006/leave/leave-requests/${userId}`, {
+            const response = await axios.get(`http://higherindia.net:3006/leave/leave-requests/${userId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -325,7 +301,7 @@ const LeaveManagement = () => {
     // Delete Leave Request
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://intranet.higherindia.net:3006/leave/leave-requests/${id}`, {
+            await axios.delete(`http://higherindia.net:3006/leave/leave-requests/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

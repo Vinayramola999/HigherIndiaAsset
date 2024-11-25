@@ -85,7 +85,7 @@ const UnifiedService = () => {
         // Check the payload before sending
         console.log('Payload:', payload);
 
-        axios.post('http://43.204.140.118:8080/addTemplates', payload)
+        axios.post('http://higherindia.net:8080/addTemplates', payload)
             .then(response => {
                 setTemplateName('');
                 setAddedItems([]);
@@ -119,7 +119,7 @@ const UnifiedService = () => {
             return;
         }
         try {
-            const response = await axios.post('http://intranet.higherindia.net:3006/verify-token', {
+            const response = await axios.post('http://higherindia.net:3006/verify-token', {
                 token: token
             });
             console.log('Token is valid:', response.data);
@@ -152,7 +152,7 @@ const UnifiedService = () => {
 
     const confirmDeleteTemplate = () => {
         if (templateToDelete) {
-            axios.delete('http://43.204.140.118:8080/deleteTemplate/${templateToDelete}')
+            axios.delete('http://higherindia.net:8080/deleteTemplate/${templateToDelete}')
                 .then(response => {
                 console.log('Template deleted successfully:', response.data);
                 fetchTemplates();
